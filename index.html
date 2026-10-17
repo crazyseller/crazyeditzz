@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRAZY CUT - Pro Mobile & PC Video Studio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        body {
+            background: #020208;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+            overflow-x: hidden;
+        }
+
+        /* Glowing Animated Title */
+        h1 {
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #00f0ff;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 40px #ff007f, 0 0 80px #ff007f;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: 900;
+            animation: titleGlow 2.5s infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #ff007f; }
+            100% { text-shadow: 0 0 20px #00f0ff, 0 0 40px #ff007f, 0 0 60px #00f0ff, 0 0 90px #ff007f; }
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn-glow {
+            background: linear-gradient(135deg, #ff007f, #7000ff);
+            color: #fff;
+            padding: 10px 22px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.7);
+            transition: 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-transform: uppercase;
+        }
+
+        .btn-glow:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.9), 0 0 15px #ff007f;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #00ff88, #00f0ff);
+            color: #020206;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.7);
+        }
+
+        .workspace {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Video Preview Box */
+        .video-box {
+            width: 100%;
+            background: #000;
+            border: 2px solid #00f0ff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            max-height: 420px;
+        }
+
+        video {
+            width: 100%;
+            max-height: 400px;
+            display: block;
+            object-fit: contain;
+        }
+
+        #overlayImage {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            max-width: 120px;
+            display: none;
+            border: 2px solid #00f0ff;
+            border-radius: 6px;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        #textOverlayDiv {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 900;
+            text-shadow: 0 0 12px #ff007f, 0 0 25px #00f0ff;
+            z-index: 60;
+            pointer-events: none;
+            display: none;
+            text-align: center;
+        }
+
+        .watermark-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #ff007f;
+            pointer-events: none;
+            z-index: 99;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 240, 255, 0.6);
+            animation: badgePulse 2s infinite alternate;
+        }
+
+        @keyframes badgePulse {
+            0% { border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 0 5px rgba(0, 240, 255, 0.3); }
+            100% { border-color: rgba(255, 0, 127, 0.8); box-shadow: 0 0 15px rgba(255, 0, 127, 0.6); }
+        }
+
+        /* Timeline Strip */
+        .timeline-strip {
+            background: rgba(12, 12, 28, 0.95);
+            border: 1px solid rgba(0, 240, 255, 0.5);
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(112, 0, 255, 0.3);
+        }
+
+        .timeline-clip {
+            min-width: 130px;
+            height: 58px;
+            background: linear-gradient(135deg, #181838, #2a124c);
+            border: 2px solid #7000ff;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #00f0ff;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .timeline-clip.active {
+            border-color: #ff007f;
+            box-shadow: 0 0 15px #ff007f;
+            background: #381050;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: rgba(10, 10, 26, 0.96);
+            border: 1px solid rgba(0, 240, 255, 0.5);
+            backdrop-filter: blur(15px);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
+        }
+
+        .section-title {
+            color: #00f0ff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.4);
+            padding-bottom: 4px;
+            margin-bottom: 4px;
+        }
+
+        .grid-options-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .btn-option {
+            background: #09091a;
+            border: 1px solid #00f0ff;
+            color: #00f0ff;
+            padding: 8px 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-option:hover {
+            background: #00f0ff;
+            color: #020206;
+            box-shadow: 0 0 12px #00f0ff;
+        }
+
+        .btn-fx {
+            border-color: #ff007f;
+            color: #ff007f;
+        }
+
+        .btn-fx:hover {
+            background: #ff007f;
+            color: #fff;
+            box-shadow: 0 0 12px #ff007f;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 90px;
+            background: #0e0e24;
+            border: 1px solid #7000ff;
+            color: #c0c0f5;
+            padding: 8px 4px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #7000ff, #ff007f);
+            color: #fff;
+            border-color: #ff007f;
+            box-shadow: 0 0 12px #ff007f;
+        }
+
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .tool-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 0.8rem;
+            background: #070714;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 240, 255, 0.25);
+        }
+
+        .tool-row label {
+            flex: 1;
+            color: #c0c0e5;
+            font-weight: 600;
+        }
+
+        .tool-row input, .tool-row select {
+            background: #020206;
+            border: 1px solid #00f0ff;
+            color: #fff;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-weight: 700;
+            font-size: 0.78rem;
+        }
+
+        canvas {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚡ CRAZY CUT ⚡</h1>
+
+    <div class="top-actions">
+        <label for="videoInput" class="btn-glow">📁 Upload Video</label>
+        <input type="file" id="videoInput" accept="video/*">
+        <button class="btn-glow btn-download" id="downloadBtn" onclick="downloadEditedVideo()">💾 Export Final Video</button>
+    </div>
+
+    <div class="workspace">
+        <!-- Video Box -->
+        <div class="video-box">
+            <video id="videoPlayer" controls autoplay loop crossorigin="anonymous">
+                <source src="" type="video/mp4">
+            </video>
+            <img id="overlayImage" alt="Overlay">
+            <div id="textOverlayDiv"></div>
+            <div class="watermark-badge">CRAZY GAMER</div>
+        </div>
+
+        <!-- Timeline Strip -->
+        <div class="timeline-strip" id="timelineStrip">
+            <div style="font-size:0.8rem; color:#00f0ff; font-weight:700; min-width:70px;">TIMELINE:</div>
+            <div class="timeline-clip active" onclick="selectClip(0)">🎬 Main Clip 1<br><span id="clip1Time" style="font-size:0.65rem; color:#aaa;">0s - Full</span></div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="controls-panel">
+            <div class="tabs-header">
+                <div class="tab-btn active" onclick="switchTab('basicTab')">Basic ✂️</div>
+                <div class="tab-btn" onclick="switchTab('proCcTab')">Pro CC 🎨</div>
+                <div class="tab-btn" onclick="switchTab('proFxTab')">Pro FX ✨</div>
+                <div class="tab-btn" onclick="switchTab('textTab')">Text 📝</div>
+                <div class="tab-btn" onclick="switchTab('audioTab')">Audio 🎵</div>
+                <div class="tab-btn" onclick="switchTab('overlayTab')">Overlay 🟩</div>
+            </div>
+
+            <!-- TAB 1: BASIC TOOLS -->
+            <div id="basicTab" class="tab-content active">
+                <div class="section-title">✂️ Primary Editing Tools</div>
+                <div class="tool-row">
+                    <label>✂️ Split / Trim (Start - End s):</label>
+                    <input type="number" id="startTime" value="0" min="0" style="width: 45px;">
+                    <input type="number" id="endTime" value="10" min="1" style="width: 45px;">
+                    <button onclick="applyTrim()" style="background:#7000ff; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-weight:700; cursor:pointer;">Cut</button>
+                </div>
+                <div class="tool-row">
+                    <label>⚡ Speed:</label>
+                    <select id="speedSelect" onchange="applySpeed()">
+                        <option value="1">1.0x Normal</option>
+                        <option value="0.5">0.5x Slow-Mo</option>
+                        <option value="2">2.0x Fast</option>
+                        <option value="3">3.0x Hyper Speed</option>
+                    </select>
+                </div>
+                <div class="tool-row">
+                    <label>🔊 Volume:</label>
+                    <input type="range" id="volRange" min="0" max="1" step="0.1" value="1" oninput="applyVolume()" style="width: 90px;">
+                </div>
+                <div class="tool-row">
+                    <label>📐 Ratio:</label>
+                    <select id="ratioSelect" onchange="applyRatio()">
+                        <option value="original">Original</option>
+                        <option value="9:16">9:16 Reels / Shorts</option>
+                        <option value="16:9">16:9 YouTube</option>
+                        <option value="1:1">1:1 Square</option>
+                    </select>
+                </div>
+                <div class="tool-row">
+                    <label>🔄 Mirror:</label>
+                    <button class="btn-option" onclick="applyFlip()" style="padding: 4px 8px;">Flip Horizontal</button>
+                </div>
+            </div>
+
+            <!-- TAB 2: PRO CC (Color Grading) -->
+            <div id="proCcTab" class="tab-content">
+                <div class="section-title">🎨 Cinematic Color Grading (CC)</div>
+                <button class="btn-option" style="background:linear-gradient(135deg, #00f0ff, #7000ff); color:#fff; padding: 8px;" onclick="setCC('auto')">⚡ Auto-Enhance Smart CC</button>
+                <div class="grid-options-3">
+                    <button class="btn-option" onclick="setCC('original')">Original</button>
+                    <button class="btn-option" onclick="setCC('cyber')">Cyber Neon</button>
+                    <button class="btn-option" onclick="setCC('hdr')">HDR Boost</button>
+                    <button class="btn-option" onclick="setCC('teal')">Teal & Orange</button>
+                    <button class="btn-option" onclick="setCC('anime')">Anime Vivid</button>
+                    <button class="btn-option" onclick="setCC('moody')">Moody Dark</button>
+                    <button class="btn-option" onclick="setCC('retro')">90s Retro Vibe</button>
+                    <button class="btn-option" onclick="setCC('matrix')">Matrix Green</button>
+                    <button class="btn-option" onclick="setCC('blood')">Blood Red</button>
+                    <button class="btn-option" onclick="setCC('ice')">Arctic Ice</button>
+                    <button class="btn-option" onclick="setCC('gold')">Golden Hour</button>
+                    <button class="btn-option" onclick="setCC('godmode')">🔥 God Mode</button>
+                </div>
+            </div>
+
+            <!-- TAB 3: PRO FX (Visual Effects) -->
+            <div id="proFxTab" class="tab-content">
+                <div class="section-title" style="color:#ff007f;">✨ Futuristic Effects & Glitches</div>
+                <div class="grid-options-3">
+                    <button class="btn-option btn-fx" onclick="setFX('shake')">🔥 Cam Shake</button>
+                    <button class="btn-option btn-fx" onclick="setFX('rgb')">💥 RGB Split</button>
+                    <button class="btn-option btn-fx" onclick="setFX('flash')">⚡ White Flash</button>
+                    <button class="btn-option btn-fx" onclick="setFX('halo')">✨ Halo Glow</button>
+                    <button class="btn-option btn-fx" onclick="setFX('neonpulse')">💡 Neon Pulse</button>
+                    <button class="btn-option btn-fx" onclick="setFX('vhs')">📼 VHS Grain</button>
+                </div>
+            </div>
+
+            <!-- TAB 4: TEXT -->
+            <div id="textTab" class="tab-content">
+                <div class="section-title">📝 Add Custom Neon Text</div>
+                <div class="tool-row">
+                    <label>Type Text:</label>
+                    <input type="text" id="customTextInput" placeholder="Enter text..." style="width: 130px;">
+                    <button onclick="applyCustomText()" style="background:#7000ff; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-weight:700;">Apply</button>
+                </div>
+            </div>
+
+            <!-- TAB 5: AUDIO -->
+            <div id="audioTab" class="tab-content">
+                <div class="section-title">🎵 Background Music Uploader</div>
+                <div class="tool-row">
+                    <label>Upload Song (MP3/WAV):</label>
+                    <input type="file" id="audioInput" accept="audio/*">
+                    <label for="audioInput" class="btn-option" style="padding: 5px 10px; margin:0; cursor:pointer;">Choose MP3</label>
+                </div>
+                <audio id="bgAudio" loop></audio>
+            </div>
+
+            <!-- TAB 6: OVERLAY -->
+            <div id="overlayTab" class="tab-content">
+                <div class="section-title">🟩 Add Photo Logo / Overlay</div>
+                <div class="tool-row">
+                    <label>Upload Image Layer:</label>
+                    <input type="file" id="imageOverlayInput" accept="image/*">
+                    <label for="imageOverlayInput" class="btn-option" style="padding: 5px 10px; margin:0; cursor:pointer;">Choose Photo</label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <canvas id="exportCanvas"></canvas>
+
+    <script>
+        const videoInput = document.getElementById('videoInput');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const startTime = document.getElementById('startTime');
+        const endTime = document.getElementById('endTime');
+        const volRange = document.getElementById('volRange');
+        const overlayImage = document.getElementById('overlayImage');
+        const textOverlayDiv = document.getElementById('textOverlayDiv');
+        const bgAudio = document.getElementById('bgAudio');
+
+        let currentFilter = 'none';
+        let isFlipped = false;
+        let overlayImgSrc = '';
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        videoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                videoPlayer.src = url;
+                videoPlayer.onloadedmetadata = function() {
+                    endTime.value = Math.floor(videoPlayer.duration);
+                    document.getElementById('clip1Time').innerText = `0s - ${Math.floor(videoPlayer.duration)}s`;
+                };
+                videoPlayer.play();
+                if(!videoPlayer.muted && bgAudio.src) bgAudio.play();
+            }
+        });
+
+        document.getElementById('imageOverlayInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                overlayImgSrc = url;
+                overlayImage.src = url;
+                overlayImage.style.display = 'block';
+            }
+        });
+
+        document.getElementById('audioInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                bgAudio.src = url;
+                bgAudio.play();
+                alert("Background audio loaded successfully!");
+            }
+        });
+
+        function applyCustomText() {
+            const txt = document.getElementById('customTextInput').value;
+            if(txt) {
+                textOverlayDiv.innerText = txt;
+                textOverlayDiv.style.display = 'block';
+            }
+        }
+
+        // Pro Color Grading Presets
+        function setCC(type) {
+            if (type === 'original') currentFilter = 'none';
+            else if (type === 'auto') currentFilter = 'contrast(160%) brightness(110%) saturate(200%) drop-shadow(0 0 6px #00f0ff)';
+            else if (type === 'cyber') currentFilter = 'contrast(180%) brightness(115%) saturate(220%) hue-rotate(-15deg)';
+            else if (type === 'hdr') currentFilter = 'contrast(210%) brightness(125%) saturate(250%)';
+            else if (type === 'teal') currentFilter = 'contrast(165%) brightness(105%) saturate(180%) hue-rotate(170deg)';
+            else if (type === 'anime') currentFilter = 'contrast(140%) brightness(130%) saturate(210%)';
+            else if (type === 'moody') currentFilter = 'contrast(190%) brightness(85%) saturate(130%)';
+            else if (type === 'retro') currentFilter = 'contrast(135%) brightness(100%) saturate(90%) sepia(30%)';
+            else if (type === 'matrix') currentFilter = 'contrast(180%) brightness(110%) saturate(220%) hue-rotate(110deg)';
+            else if (type === 'blood') currentFilter = 'contrast(200%) brightness(90%) saturate(260%) sepia(60%)';
+            else if (type === 'ice') currentFilter = 'contrast(160%) brightness(130%) saturate(180%) hue-rotate(200deg)';
+            else if (type === 'gold') currentFilter = 'contrast(175%) brightness(115%) saturate(230%) sepia(40%)';
+            else if (type === 'godmode') currentFilter = 'contrast(260%) brightness(145%) saturate(380%) drop-shadow(0 0 12px #ff007f)';
+
+            videoPlayer.style.animation = 'none';
+            videoPlayer.style.filter = currentFilter;
+        }
+
+        // Pro Visual Effects
+        function setFX(type) {
+            if (type === 'shake') {
+                currentFilter = 'contrast(180%) saturate(220%)';
+                videoPlayer.style.animation = 'shakeAnim 0.25s infinite alternate';
+            } else if (type === 'rgb') {
+                currentFilter = 'contrast(190%) hue-rotate(80deg) saturate(280%)';
+                videoPlayer.style.animation = 'none';
+            } else if (type === 'flash') {
+                currentFilter = 'brightness(190%) contrast(160%)';
+                videoPlayer.style.animation = 'flashAnim 0.7s infinite';
+            } else if (type === 'halo') {
+                currentFilter = 'blur(0.8px) contrast(160%) brightness(125%) drop-shadow(0 0 12px #00f0ff)';
+                videoPlayer.style.animation = 'none';
+            } else if (type === 'neonpulse') {
+                currentFilter = 'contrast(210%) saturate(280%)';
+                videoPlayer.style.animation = 'neonPulseAnim 1.2s infinite alternate';
+            } else if (type === 'vhs') {
+                currentFilter = 'contrast(135%) saturate(75%) sepia(45%) blur(0.5px)';
+                videoPlayer.style.animation = 'none';
+            }
+            videoPlayer.style.filter = currentFilter;
+        }
+
+        function applyTrim() {
+            const start = parseFloat(startTime.value) || 0;
+            const end = parseFloat(endTime.value) || videoPlayer.duration;
+            videoPlayer.currentTime = start;
+            videoPlayer.ontimeupdate = function() {
+                if (videoPlayer.currentTime >= end) videoPlayer.currentTime = start;
+            };
+        }
+
+        function applySpeed() {
+            videoPlayer.playbackRate = parseFloat(document.getElementById('speedSelect').value);
+        }
+
+        function applyVolume() {
+            videoPlayer.volume = parseFloat(volRange.value);
+            bgAudio.volume = parseFloat(volRange.value);
+        }
+
+        function applyRatio() {
+            const ratio = document.getElementById('ratioSelect').value;
+            if (ratio === '9:16') videoPlayer.style.aspectRatio = '9/16';
+            else if (ratio === '16:9') videoPlayer.style.aspectRatio = '16/9';
+            else if (ratio === '1:1') videoPlayer.style.aspectRatio = '1/1';
+            else videoPlayer.style.aspectRatio = 'auto';
+        }
+
+        function applyFlip() {
+            isFlipped = !isFlipped;
+            videoPlayer.style.transform = isFlipped ? 'scaleX(-1)' : 'scaleX(1)';
+        }
+
+        function selectClip(index) {
+            document.querySelectorAll('.timeline-clip').forEach(el => el.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function downloadEditedVideo() {
+            const canvas = document.getElementById('exportCanvas');
+            const ctx = canvas.getContext('2d');
+
+            if (!videoPlayer.src) {
+                alert("Please upload a video first!");
+                return;
+            }
+
+            canvas.width = videoPlayer.videoWidth || 640;
+            canvas.height = videoPlayer.videoHeight || 360;
+
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.innerText = "⏳ Processing...";
+            downloadBtn.disabled = true;
+
+            const stream = canvas.captureStream(30);
+            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            const chunks = [];
+
+            mediaRecorder.ondataavailable = e => chunks.data && chunks.push(e.data);
+            mediaRecorder.onstop = e => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'CRAZY_CUT_EDITED.webm';
+                a.click();
+
+                downloadBtn.innerText = "💾 Export Final Video";
+                downloadBtn.disabled = false;
+            };
+
+            videoPlayer.currentTime = parseFloat(startTime.value) || 0;
+            videoPlayer.playbackRate = parseFloat(document.getElementById('speedSelect').value) || 1;
+            videoPlayer.play();
+            if(bgAudio.src) bgAudio.play();
+            mediaRecorder.start();
+
+            const imgObj = new Image();
+            if(overlayImgSrc) imgObj.src = overlayImgSrc;
+
+            function drawFrame() {
+                if (videoPlayer.paused || videoPlayer.ended) return;
+
+                ctx.save();
+                if (isFlipped) {
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(videoPlayer, -canvas.width, 0, canvas.width, canvas.height);
+                } else {
+                    ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+                }
+                ctx.restore();
+
+                if(overlayImgSrc && imgObj.complete) {
+                    ctx.drawImage(imgObj, 20, 20, 100, 100);
+                }
+
+                const customTxt = document.getElementById('customTextInput').value;
+                if(customTxt) {
+                    ctx.filter = 'none';
+                    ctx.font = '900 30px Rajdhani, sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.shadowColor = '#ff007f';
+                    ctx.shadowBlur = 15;
+                    ctx.textAlign = 'center';
+                    ctx.fillText(customTxt, canvas.width / 2, canvas.height - 85);
+                }
+
+                ctx.filter = 'none';
+                ctx.font = '700 18px Rajdhani, sans-serif';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.shadowColor = '#00f0ff';
+                ctx.shadowBlur = 10;
+                ctx.textAlign = 'center';
+                ctx.fillText('CRAZY GAMER', canvas.width / 2, canvas.height - 22);
+
+                if (videoPlayer.currentTime >= (parseFloat(endTime.value) || videoPlayer.duration)) {
+                    mediaRecorder.stop();
+                    videoPlayer.pause();
+                    if(bgAudio.src) bgAudio.pause();
+                } else {
+                    requestAnimationFrame(drawFrame);
+                }
+            }
+
+            drawFrame();
+        }
+    </script>
+
+    <style>
+        @keyframes shakeAnim {
+            0% { transform: translate(3px, 3px) rotate(0deg); }
+            100% { transform: translate(-3px, -2px) rotate(-1deg); }
+        }
+        @keyframes flashAnim {
+            0% { filter: brightness(100%); }
+            50% { filter: brightness(240%) contrast(180%); }
+            100% { filter: brightness(100%); }
+        }
+        @keyframes neonPulseAnim {
+            0% { filter: contrast(180%) drop-shadow(0 0 4px #00f0ff); }
+            100% { filter: contrast(230%) drop-shadow(0 0 16px #ff007f); }
+        }
+    </style>
+
+</body>
+</html>
