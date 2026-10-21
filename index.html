@@ -287,11 +287,11 @@
 
         .tab-btn {
             flex: 1;
-            padding: 14px;
+            padding: 14px 8px;
             background: transparent;
             border: none;
             color: #8888aa;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.25s ease;
@@ -314,6 +314,37 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        .controls-panel {
+            background: rgba(20, 20, 45, 0.5);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 14px;
+        }
+
+        .slider-group {
+            margin-bottom: 10px;
+        }
+
+        .slider-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #00f0ff;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .slider-control {
+            width: 100%;
+            accent-color: #00f0ff;
+            cursor: pointer;
         }
 
         .grid-presets {
@@ -452,6 +483,7 @@
             <div class="sidebar">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('ccTab', this)">50+ CC 🎨</button>
+                    <button class="tab-btn" onclick="switchTab('blurTab', this)">Blur BG 💧</button>
                     <button class="tab-btn" onclick="switchTab('fxTab', this)">Trending 🔥</button>
                 </div>
 
@@ -481,6 +513,56 @@
                     </div>
                 </div>
 
+                <div id="blurTab" class="tab-content">
+                    <div class="controls-panel">
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span>Blur Strength</span>
+                                <span id="blurValText">12px</span>
+                            </div>
+                            <input type="range" id="blurStrengthSlider" class="slider-control" min="0" max="30" value="12" oninput="updateBlurParams()">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span>Edge Feathering</span>
+                                <span id="featherValText">60%</span>
+                            </div>
+                            <input type="range" id="featherSlider" class="slider-control" min="10" max="90" value="60" oninput="updateBlurParams()">
+                        </div>
+                        <div class="slider-group">
+                            <div class="slider-header">
+                                <span>Subject Protection Area</span>
+                                <span id="subjectValText">55%</span>
+                            </div>
+                            <input type="range" id="subjectSizeSlider" class="slider-control" min="20" max="80" value="55" oninput="updateBlurParams()">
+                        </div>
+                    </div>
+
+                    <div class="grid-presets">
+                        <button class="btn-option" onclick="setBlur('bNone', this)">No Blur</button>
+                        <button class="btn-option" onclick="setBlur('b1', this)">💧 Soft Depth</button>
+                        <button class="btn-option" onclick="setBlur('b2', this)">✨ Cyber Bokeh</button>
+                        <button class="btn-option" onclick="setBlur('b3', this)">🎯 Radial Focus</button>
+                        <button class="btn-option" onclick="setBlur('b4', this)">❄️ Frost Glass</button>
+                        <button class="btn-option" onclick="setBlur('b5', this)">🌌 Anamorphic</button>
+                        <button class="btn-option" onclick="setBlur('b6', this)">📸 Tilt-Shift</button>
+                        <button class="btn-option" onclick="setBlur('b7', this)">💫 Soft Halo</button>
+                        <button class="btn-option" onclick="setBlur('b8', this)">🔮 Dreamy Glow</button>
+                        <button class="btn-option" onclick="setBlur('b9', this)">⚡ Motion Blur</button>
+                        <button class="btn-option" onclick="setBlur('b10', this)">🌟 Deep Bokeh</button>
+                        <button class="btn-option" onclick="setBlur('b11', this)">💎 Glassmorphic</button>
+                        <button class="btn-option" onclick="setBlur('b12', this)">🌆 Sunset Depth</button>
+                        <button class="btn-option" onclick="setBlur('b13', this)">🌌 Cosmic Blur</button>
+                        <button class="btn-option" onclick="setBlur('b14', this)">⚡ High Sharp Depth</button>
+                        <button class="btn-option" onclick="setBlur('b15', this)">🎨 Dark Vignette</button>
+                        <button class="btn-option" onclick="setBlur('b16', this)">☁️ Soft Focus</button>
+                        <button class="btn-option" onclick="setBlur('b17', this)">🔥 Warm Bokeh</button>
+                        <button class="btn-option" onclick="setBlur('b18', this)">❄️ Cold Depth</button>
+                        <button class="btn-option" onclick="setBlur('b19', this)">🎬 Cinema Blur</button>
+                        <button class="btn-option" onclick="setBlur('b20', this)">💥 Ultra Bokeh</button>
+                    </div>
+                </div>
+
                 <div id="fxTab" class="tab-content">
                     <div class="grid-presets">
                         <button class="btn-option" onclick="setCC('fxShake', this)">⚡ Shake FX</button>
@@ -504,7 +586,6 @@
             if (input === '400') {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('appContent').style.display = 'flex';
-                // Save session in browser
                 sessionStorage.setItem('crazy_auth', 'true');
             } else {
                 errorMsg.style.display = 'block';
@@ -521,7 +602,67 @@
         const videoPlayer = document.getElementById('videoPlayer');
         const videoInput = document.getElementById('videoInput');
         let currentFilter = 'none';
+        let currentBlurPreset = 'bNone';
         let selectedFps = 60;
+
+        let blurParams = {
+            strength: 12,
+            feather: 60,
+            subjectSize: 55,
+            extraBgFilter: 'none'
+        };
+
+        const blurPresets = {
+            'bNone': { strength: 0, extraBgFilter: 'none' },
+            'b1': { strength: 10, extraBgFilter: 'none' },
+            'b2': { strength: 16, extraBgFilter: 'saturate(160%) brightness(110%)' },
+            'b3': { strength: 14, extraBgFilter: 'contrast(120%)' },
+            'b4': { strength: 20, extraBgFilter: 'brightness(125%) contrast(90%)' },
+            'b5': { strength: 12, extraBgFilter: 'contrast(150%) hue-rotate(180deg)' },
+            'b6': { strength: 18, extraBgFilter: 'saturate(140%)' },
+            'b7': { strength: 8, extraBgFilter: 'brightness(120%)' },
+            'b8': { strength: 22, extraBgFilter: 'saturate(180%) hue-rotate(320deg)' },
+            'b9': { strength: 15, extraBgFilter: 'contrast(130%)' },
+            'b10': { strength: 25, extraBgFilter: 'saturate(200%) brightness(105%)' },
+            'b11': { strength: 14, extraBgFilter: 'brightness(115%) contrast(95%)' },
+            'b12': { strength: 12, extraBgFilter: 'sepia(40%) saturate(160%)' },
+            'b13': { strength: 18, extraBgFilter: 'hue-rotate(240deg) saturate(150%)' },
+            'b14': { strength: 10, extraBgFilter: 'contrast(170%)' },
+            'b15': { strength: 16, extraBgFilter: 'brightness(75%) contrast(140%)' },
+            'b16': { strength: 8, extraBgFilter: 'brightness(110%) saturate(90%)' },
+            'b17': { strength: 18, extraBgFilter: 'sepia(30%) hue-rotate(340deg) saturate(170%)' },
+            'b18': { strength: 15, extraBgFilter: 'hue-rotate(160deg) contrast(120%)' },
+            'b19': { strength: 14, extraBgFilter: 'contrast(135%) brightness(95%)' },
+            'b20': { strength: 28, extraBgFilter: 'saturate(220%) contrast(130%)' }
+        };
+
+        function updateBlurParams() {
+            blurParams.strength = parseInt(document.getElementById('blurStrengthSlider').value);
+            blurParams.feather = parseInt(document.getElementById('featherSlider').value);
+            blurParams.subjectSize = parseInt(document.getElementById('subjectSizeSlider').value);
+
+            document.getElementById('blurValText').innerText = `${blurParams.strength}px`;
+            document.getElementById('featherValText').innerText = `${blurParams.feather}%`;
+            document.getElementById('subjectValText').innerText = `${blurParams.subjectSize}%`;
+
+            applyVisualEffects();
+        }
+
+        function setBlur(presetKey, btn) {
+            currentBlurPreset = presetKey;
+            const config = blurPresets[presetKey] || blurPresets['bNone'];
+            
+            blurParams.strength = config.strength;
+            blurParams.extraBgFilter = config.extraBgFilter;
+
+            document.getElementById('blurStrengthSlider').value = config.strength;
+            document.getElementById('blurValText').innerText = `${config.strength}px`;
+
+            document.querySelectorAll('#blurTab .btn-option').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            applyVisualEffects();
+        }
 
         function selectFps(fps) {
             selectedFps = fps;
@@ -592,12 +733,68 @@
             }
         });
 
+        function applyVisualEffects() {
+            let combinedFilter = currentFilter !== 'none' ? currentFilter : '';
+            if (blurParams.strength > 0 && currentBlurPreset !== 'bNone') {
+                const blurStr = `blur(${blurParams.strength / 2}px)`;
+                combinedFilter = combinedFilter ? `${combinedFilter} ${blurStr}` : blurStr;
+            }
+            videoPlayer.style.filter = combinedFilter || 'none';
+        }
+
         function setCC(presetKey, btn) {
             currentFilter = ccFilters[presetKey] || 'none';
-            videoPlayer.style.filter = currentFilter;
+            applyVisualEffects();
             
-            document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#ccTab .btn-option, #fxTab .btn-option').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
+        }
+
+        function drawFrameToCanvas(ctx, canvasWidth, canvasHeight) {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+            // Layer 1: Blurred & Styled Background
+            ctx.save();
+            let bgFilter = currentFilter !== 'none' ? currentFilter : '';
+            if (blurParams.strength > 0) {
+                const bFilter = `blur(${blurParams.strength}px) ${blurParams.extraBgFilter !== 'none' ? blurParams.extraBgFilter : ''}`;
+                bgFilter = bgFilter ? `${bgFilter} ${bFilter}` : bFilter;
+            }
+            ctx.filter = bgFilter || 'none';
+            ctx.drawImage(videoPlayer, 0, 0, canvasWidth, canvasHeight);
+            ctx.restore();
+
+            // Layer 2: Sharp Center Subject with Smooth Feathered Alpha Mask
+            if (blurParams.strength > 0 && currentBlurPreset !== 'bNone') {
+                ctx.save();
+                
+                const maskCanvas = document.createElement('canvas');
+                maskCanvas.width = canvasWidth;
+                maskCanvas.height = canvasHeight;
+                const mCtx = maskCanvas.getContext('2d');
+
+                const rx = (canvasWidth * (blurParams.subjectSize / 100)) / 2;
+                const ry = (canvasHeight * (blurParams.subjectSize / 100)) / 2;
+                const cx = canvasWidth / 2;
+                const cy = canvasHeight / 2;
+
+                const grad = mCtx.createRadialGradient(cx, cy, Math.min(rx, ry) * (1 - blurParams.feather / 100), cx, cy, Math.max(rx, ry));
+                grad.addColorStop(0, 'rgba(0,0,0,1)');
+                grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+                mCtx.fillStyle = grad;
+                mCtx.beginPath();
+                mCtx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+                mCtx.fill();
+
+                ctx.filter = currentFilter !== 'none' ? currentFilter : 'none';
+                ctx.drawImage(videoPlayer, 0, 0, canvasWidth, canvasHeight);
+
+                ctx.globalCompositeOperation = 'destination-in';
+                ctx.drawImage(maskCanvas, 0, 0);
+
+                ctx.restore();
+            }
         }
 
         function getSupportedMimeType() {
@@ -637,17 +834,37 @@
             canvas.width = videoPlayer.videoWidth || 1280;
             canvas.height = videoPlayer.videoHeight || 720;
 
-            const stream = canvas.captureStream(selectedFps);
-            const mimeType = getSupportedMimeType();
+            // Sync Video & Audio Stream
+            const canvasStream = canvas.captureStream(selectedFps);
+            let combinedStream = canvasStream;
 
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioCtx.createMediaElementSource(videoPlayer);
+                const dest = audioCtx.createMediaStreamDestination();
+                source.connect(dest);
+                source.connect(audioCtx.destination);
+
+                const audioTracks = dest.stream.getAudioTracks();
+                if (audioTracks.length > 0) {
+                    combinedStream = new MediaStream([
+                        ...canvasStream.getVideoTracks(),
+                        audioTracks[0]
+                    ]);
+                }
+            } catch (err) {
+                console.log("Audio routing bypassed or already attached");
+            }
+
+            const mimeType = getSupportedMimeType();
             let mediaRecorder;
             try {
-                mediaRecorder = new MediaRecorder(stream, {
+                mediaRecorder = new MediaRecorder(combinedStream, {
                     mimeType: mimeType || undefined,
                     videoBitsPerSecond: selectedFps === 60 ? 6000000 : 3500000
                 });
             } catch (err) {
-                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder = new MediaRecorder(combinedStream);
             }
 
             const chunks = [];
@@ -668,7 +885,7 @@
                 videoPlayer.play();
             };
 
-            // Reset video to start
+            // Reset video for complete rendering
             videoPlayer.pause();
             videoPlayer.currentTime = 0;
             await new Promise(r => setTimeout(r, 200));
@@ -684,12 +901,11 @@
                     percentageText.innerText = '100%';
                     setTimeout(() => {
                         if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-                    }, 200);
+                    }, 300);
                     return;
                 }
 
-                ctx.filter = currentFilter !== 'none' ? currentFilter : 'none';
-                ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
+                drawFrameToCanvas(ctx, canvas.width, canvas.height);
 
                 const progress = Math.min(100, Math.floor((videoPlayer.currentTime / duration) * 100));
                 progressBar.style.width = `${progress}%`;
