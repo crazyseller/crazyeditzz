@@ -26,6 +26,103 @@
             overflow-x: hidden;
         }
 
+        /* Password Modal Styling */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 3, 12, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: rgba(10, 10, 25, 0.9);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00f0ff, #ff007f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 0.9rem;
+            color: #8888aa;
+            margin-bottom: 20px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(20, 20, 45, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .password-input:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #00f0ff, #7000ff);
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            transition: all 0.25s ease;
+        }
+
+        .login-btn:hover {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .error-msg {
+            color: #ff007f;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+            font-weight: 700;
+        }
+
+        /* App UI Structure */
+        #appContent {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         header {
             background: rgba(8, 8, 20, 0.85);
             backdrop-filter: blur(12px);
@@ -307,86 +404,120 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo">⚡ CRAZY CUT</div>
-        
-        <div class="top-actions">
-            <label for="videoInput" class="btn-glow">📁 Upload Video</label>
-            <input type="file" id="videoInput" accept="video/*">
-
-            <div class="fps-selector-box">
-                <span class="fps-label">⚡ FPS:</span>
-                <button class="fps-btn" id="fps30Btn" onclick="selectFps(30)">30 FPS</button>
-                <button class="fps-btn active" id="fps60Btn" onclick="selectFps(60)">60 FPS</button>
-            </div>
-
-            <button class="btn-glow btn-download" id="downloadBtn" onclick="downloadEditedVideo()">💾 Export Video</button>
+    <div id="loginOverlay">
+        <div class="login-box">
+            <div class="login-title">⚡ CRAZY CUT</div>
+            <div class="login-subtitle">Enter password to access studio</div>
+            <input type="password" id="passInput" class="password-input" placeholder="****" onkeydown="if(event.key==='Enter') checkPassword()">
+            <button class="login-btn" onclick="checkPassword()">UNLOCK STUDIO</button>
+            <div class="error-msg" id="errorMsg">❌ Invalid Password! Try Again.</div>
         </div>
-    </header>
+    </div>
 
-    <div class="workspace">
-        <div class="preview-area">
-            <div class="video-container">
-                <video id="videoPlayer" controls playsinline crossorigin="anonymous"></video>
-            </div>
+    <div id="appContent">
+        <header>
+            <div class="logo">⚡ CRAZY CUT</div>
             
-            <canvas id="exportCanvas"></canvas>
+            <div class="top-actions">
+                <label for="videoInput" class="btn-glow">📁 Upload Video</label>
+                <input type="file" id="videoInput" accept="video/*">
 
-            <div class="export-progress-box" id="exportProgressBox">
-                <div class="status-text" id="exportStatusText">🎬 Initializing Render...</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="exportProgressBar"></div>
+                <div class="fps-selector-box">
+                    <span class="fps-label">⚡ FPS:</span>
+                    <button class="fps-btn" id="fps30Btn" onclick="selectFps(30)">30 FPS</button>
+                    <button class="fps-btn active" id="fps60Btn" onclick="selectFps(60)">60 FPS</button>
                 </div>
-                <div style="font-size:0.75rem; color:#aaa; margin-top:6px;" id="exportPercentage">0%</div>
-            </div>
-        </div>
 
-        <div class="sidebar">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('ccTab', this)">50+ CC 🎨</button>
-                <button class="tab-btn" onclick="switchTab('fxTab', this)">Trending 🔥</button>
+                <button class="btn-glow btn-download" id="downloadBtn" onclick="downloadEditedVideo()">💾 Export Video</button>
             </div>
+        </header>
 
-            <div id="ccTab" class="tab-content active">
-                <div class="grid-presets" id="ccPresetsContainer">
-                    <button class="btn-option active" onclick="setCC('none', this)">Normal (No CC)</button>
-                    <button class="btn-option" onclick="setCC('cc1', this)">CC 1 Auto Glow</button>
-                    <button class="btn-option" onclick="setCC('cc2', this)">CC 2 Neon Cyber</button>
-                    <button class="btn-option" onclick="setCC('cc3', this)">CC 3 Dark Knight</button>
-                    <button class="btn-option" onclick="setCC('cc4', this)">CC 4 HDR Ultra</button>
-                    <button class="btn-option" onclick="setCC('cc5', this)">CC 5 Vintage Film</button>
-                    <button class="btn-option" onclick="setCC('cc6', this)">CC 6 Red Passion</button>
-                    <button class="btn-option" onclick="setCC('cc7', this)">CC 7 Blue Aura</button>
-                    <button class="btn-option" onclick="setCC('cc8', this)">CC 8 Anime Soft</button>
-                    <button class="btn-option" onclick="setCC('cc9', this)">CC 9 Vivid Punch</button>
-                    <button class="btn-option" onclick="setCC('cc10', this)">CC 10 Deep Shadow</button>
-                    <button class="btn-option" onclick="setCC('cc11', this)">CC 11 Cinema Gold</button>
-                    <button class="btn-option" onclick="setCC('cc12', this)">CC 12 Cold Chill</button>
-                    <button class="btn-option" onclick="setCC('cc13', this)">CC 13 Warm Sunset</button>
-                    <button class="btn-option" onclick="setCC('cc14', this)">CC 14 Soft Pastel</button>
-                    <button class="btn-option" onclick="setCC('cc15', this)">CC 15 Matrix Green</button>
-                    <button class="btn-option" onclick="setCC('cc16', this)">CC 16 High Sharp</button>
-                    <button class="btn-option" onclick="setCC('cc17', this)">CC 17 Cyber Violet</button>
-                    <button class="btn-option" onclick="setCC('cc18', this)">CC 18 B&W Drama</button>
-                    <button class="btn-option" onclick="setCC('cc19', this)">CC 19 Sepia Retro</button>
-                    <button class="btn-option" onclick="setCC('cc20', this)">CC 20 Sunlight</button>
+        <div class="workspace">
+            <div class="preview-area">
+                <div class="video-container">
+                    <video id="videoPlayer" controls playsinline crossorigin="anonymous"></video>
+                </div>
+                
+                <canvas id="exportCanvas"></canvas>
+
+                <div class="export-progress-box" id="exportProgressBox">
+                    <div class="status-text" id="exportStatusText">🎬 Initializing Render...</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="exportProgressBar"></div>
+                    </div>
+                    <div style="font-size:0.75rem; color:#aaa; margin-top:6px;" id="exportPercentage">0%</div>
                 </div>
             </div>
 
-            <div id="fxTab" class="tab-content">
-                <div class="grid-presets">
-                    <button class="btn-option" onclick="setCC('fxShake', this)">⚡ Shake FX</button>
-                    <button class="btn-option" onclick="setCC('fxGlitch', this)">👾 RGB Glitch</button>
-                    <button class="btn-option" onclick="setCC('fxFlash', this)">💥 White Flash</button>
-                    <button class="btn-option" onclick="setCC('fxBlur', this)">🌀 Halo Blur</button>
-                    <button class="btn-option" onclick="setCC('fxNeon', this)">💡 Neon Edge</button>
-                    <button class="btn-option" onclick="setCC('fxVhs', this)">📹 Retro VHS</button>
+            <div class="sidebar">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('ccTab', this)">50+ CC 🎨</button>
+                    <button class="tab-btn" onclick="switchTab('fxTab', this)">Trending 🔥</button>
+                </div>
+
+                <div id="ccTab" class="tab-content active">
+                    <div class="grid-presets" id="ccPresetsContainer">
+                        <button class="btn-option active" onclick="setCC('none', this)">Normal (No CC)</button>
+                        <button class="btn-option" onclick="setCC('cc1', this)">CC 1 Auto Glow</button>
+                        <button class="btn-option" onclick="setCC('cc2', this)">CC 2 Neon Cyber</button>
+                        <button class="btn-option" onclick="setCC('cc3', this)">CC 3 Dark Knight</button>
+                        <button class="btn-option" onclick="setCC('cc4', this)">CC 4 HDR Ultra</button>
+                        <button class="btn-option" onclick="setCC('cc5', this)">CC 5 Vintage Film</button>
+                        <button class="btn-option" onclick="setCC('cc6', this)">CC 6 Red Passion</button>
+                        <button class="btn-option" onclick="setCC('cc7', this)">CC 7 Blue Aura</button>
+                        <button class="btn-option" onclick="setCC('cc8', this)">CC 8 Anime Soft</button>
+                        <button class="btn-option" onclick="setCC('cc9', this)">CC 9 Vivid Punch</button>
+                        <button class="btn-option" onclick="setCC('cc10', this)">CC 10 Deep Shadow</button>
+                        <button class="btn-option" onclick="setCC('cc11', this)">CC 11 Cinema Gold</button>
+                        <button class="btn-option" onclick="setCC('cc12', this)">CC 12 Cold Chill</button>
+                        <button class="btn-option" onclick="setCC('cc13', this)">CC 13 Warm Sunset</button>
+                        <button class="btn-option" onclick="setCC('cc14', this)">CC 14 Soft Pastel</button>
+                        <button class="btn-option" onclick="setCC('cc15', this)">CC 15 Matrix Green</button>
+                        <button class="btn-option" onclick="setCC('cc16', this)">CC 16 High Sharp</button>
+                        <button class="btn-option" onclick="setCC('cc17', this)">CC 17 Cyber Violet</button>
+                        <button class="btn-option" onclick="setCC('cc18', this)">CC 18 B&W Drama</button>
+                        <button class="btn-option" onclick="setCC('cc19', this)">CC 19 Sepia Retro</button>
+                        <button class="btn-option" onclick="setCC('cc20', this)">CC 20 Sunlight</button>
+                    </div>
+                </div>
+
+                <div id="fxTab" class="tab-content">
+                    <div class="grid-presets">
+                        <button class="btn-option" onclick="setCC('fxShake', this)">⚡ Shake FX</button>
+                        <button class="btn-option" onclick="setCC('fxGlitch', this)">👾 RGB Glitch</button>
+                        <button class="btn-option" onclick="setCC('fxFlash', this)">💥 White Flash</button>
+                        <button class="btn-option" onclick="setCC('fxBlur', this)">🌀 Halo Blur</button>
+                        <button class="btn-option" onclick="setCC('fxNeon', this)">💡 Neon Edge</button>
+                        <button class="btn-option" onclick="setCC('fxVhs', this)">📹 Retro VHS</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Password logic
+        function checkPassword() {
+            const input = document.getElementById('passInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (input === '400') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('appContent').style.display = 'flex';
+                // Save session in browser
+                sessionStorage.setItem('crazy_auth', 'true');
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('passInput').value = '';
+            }
+        }
+
+        // Auto-unlock if session active
+        if (sessionStorage.getItem('crazy_auth') === 'true') {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('appContent').style.display = 'flex';
+        }
+
         const videoPlayer = document.getElementById('videoPlayer');
         const videoInput = document.getElementById('videoInput');
         let currentFilter = 'none';
@@ -571,4 +702,4 @@
         }
     </script>
 </body>
-</html>
+</html>v
