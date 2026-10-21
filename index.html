@@ -1,499 +1,401 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRAZY CUT - Pro Mobile & PC Video Studio</title>
+    <title>CRAZY CUT Video Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700;900&display=swap');
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Rajdhani', sans-serif;
+            user-select: none;
         }
 
         body {
-            background: #020208;
+            background-color: #03030c;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(255, 0, 127, 0.08) 0%, transparent 40%);
             color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 12px;
             overflow-x: hidden;
         }
 
-        /* Glowing Animated Title */
-        h1 {
-            font-size: 2.8rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: #00f0ff;
-            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 40px #ff007f, 0 0 80px #ff007f;
-            margin-bottom: 12px;
-            text-align: center;
-            font-weight: 900;
-            animation: titleGlow 2.5s infinite alternate;
+        header {
+            background: rgba(8, 8, 20, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            z-index: 100;
         }
 
-        @keyframes titleGlow {
-            0% { text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #ff007f; }
-            100% { text-shadow: 0 0 20px #00f0ff, 0 0 40px #ff007f, 0 0 60px #00f0ff, 0 0 90px #ff007f; }
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00f0ff, #ff007f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            letter-spacing: 2px;
         }
 
         .top-actions {
             display: flex;
             gap: 12px;
-            margin-bottom: 14px;
+            align-items: center;
             flex-wrap: wrap;
+        }
+
+        .btn-glow {
+            background: linear-gradient(135deg, #00f0ff, #7000ff);
+            border: none;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-glow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.7);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #ff007f, #7000ff);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.4);
+        }
+
+        .btn-download:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.7);
+        }
+
+        .btn-download:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .fps-selector-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(10, 10, 25, 0.8);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 20px;
+            padding: 4px 10px;
+        }
+
+        .fps-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #00f0ff;
+        }
+
+        .fps-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .fps-btn.active {
+            background: linear-gradient(135deg, #00f0ff, #7000ff);
+            color: #ffffff;
+            box-shadow: 0 0 10px #00f0ff;
         }
 
         input[type="file"] {
             display: none;
         }
 
-        .btn-glow {
-            background: linear-gradient(135deg, #ff007f, #7000ff);
-            color: #fff;
-            padding: 10px 22px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.7);
-            transition: 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-transform: uppercase;
-        }
-
-        .btn-glow:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.9), 0 0 15px #ff007f;
-        }
-
-        .btn-download {
-            background: linear-gradient(135deg, #00ff88, #00f0ff);
-            color: #020206;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.7);
-        }
-
         .workspace {
             display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 100%;
-            max-width: 900px;
+            flex: 1;
+            height: calc(100vh - 65px);
+            overflow: hidden;
         }
 
-        /* Video Preview Box */
-        .video-box {
-            width: 100%;
+        .preview-area {
+            flex: 1;
             background: #000;
-            border: 2px solid #00f0ff;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
             position: relative;
-            max-height: 420px;
+            padding: 20px;
+        }
+
+        .video-container {
+            position: relative;
+            max-width: 90%;
+            max-height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 240, 255, 0.2);
+            border: 1px solid rgba(0, 240, 255, 0.3);
         }
 
         video {
-            width: 100%;
-            max-height: 400px;
+            max-width: 100%;
+            max-height: 75vh;
             display: block;
-            object-fit: contain;
-        }
-
-        #overlayImage {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            max-width: 120px;
-            display: none;
-            border: 2px solid #00f0ff;
-            border-radius: 6px;
-            pointer-events: none;
-            z-index: 50;
-        }
-
-        #textOverlayDiv {
-            position: absolute;
-            bottom: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-size: 1.6rem;
-            font-weight: 900;
-            text-shadow: 0 0 12px #ff007f, 0 0 25px #00f0ff;
-            z-index: 60;
-            pointer-events: none;
-            display: none;
-            text-align: center;
-        }
-
-        .watermark-badge {
-            position: absolute;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.85rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px #00f0ff, 0 0 20px #ff007f;
-            pointer-events: none;
-            z-index: 99;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 5px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 240, 255, 0.6);
-            animation: badgePulse 2s infinite alternate;
-        }
-
-        @keyframes badgePulse {
-            0% { border-color: rgba(0, 240, 255, 0.4); box-shadow: 0 0 5px rgba(0, 240, 255, 0.3); }
-            100% { border-color: rgba(255, 0, 127, 0.8); box-shadow: 0 0 15px rgba(255, 0, 127, 0.6); }
-        }
-
-        /* Timeline Strip */
-        .timeline-strip {
-            background: rgba(12, 12, 28, 0.95);
-            border: 1px solid rgba(0, 240, 255, 0.5);
             border-radius: 12px;
-            padding: 10px;
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            align-items: center;
-            box-shadow: 0 0 20px rgba(112, 0, 255, 0.3);
-        }
-
-        .timeline-clip {
-            min-width: 130px;
-            height: 58px;
-            background: linear-gradient(135deg, #181838, #2a124c);
-            border: 2px solid #7000ff;
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            cursor: pointer;
-            color: #00f0ff;
-            font-weight: 700;
-            transition: 0.2s;
-        }
-
-        .timeline-clip.active {
-            border-color: #ff007f;
-            box-shadow: 0 0 15px #ff007f;
-            background: #381050;
-        }
-
-        /* Controls Panel */
-        .controls-panel {
-            background: rgba(10, 10, 26, 0.96);
-            border: 1px solid rgba(0, 240, 255, 0.5);
-            backdrop-filter: blur(15px);
-            border-radius: 14px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
-        }
-
-        .section-title {
-            color: #00f0ff;
-            font-size: 0.95rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.4);
-            padding-bottom: 4px;
-            margin-bottom: 4px;
-        }
-
-        .grid-options-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            max-height: 200px;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
-
-        .btn-option {
-            background: #09091a;
-            border: 1px solid #00f0ff;
-            color: #00f0ff;
-            padding: 8px 6px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .btn-option:hover {
-            background: #00f0ff;
-            color: #020206;
-            box-shadow: 0 0 12px #00f0ff;
-        }
-
-        .btn-fx {
-            border-color: #ff007f;
-            color: #ff007f;
-        }
-
-        .btn-fx:hover {
-            background: #ff007f;
-            color: #fff;
-            box-shadow: 0 0 12px #ff007f;
-        }
-
-        .tabs-header {
-            display: flex;
-            gap: 6px;
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            flex: 1;
-            min-width: 90px;
-            background: #0e0e24;
-            border: 1px solid #7000ff;
-            color: #c0c0f5;
-            padding: 8px 4px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            border-radius: 6px;
-            cursor: pointer;
-            text-align: center;
-            transition: 0.2s;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #7000ff, #ff007f);
-            color: #fff;
-            border-color: #ff007f;
-            box-shadow: 0 0 12px #ff007f;
-        }
-
-        .tab-content {
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .tab-content.active {
-            display: flex;
-        }
-
-        .tool-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            font-size: 0.8rem;
-            background: #070714;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(0, 240, 255, 0.25);
-        }
-
-        .tool-row label {
-            flex: 1;
-            color: #c0c0e5;
-            font-weight: 600;
-        }
-
-        .tool-row input, .tool-row select {
-            background: #020206;
-            border: 1px solid #00f0ff;
-            color: #fff;
-            padding: 5px 8px;
-            border-radius: 5px;
-            font-weight: 700;
-            font-size: 0.78rem;
         }
 
         canvas {
             display: none;
         }
+
+        .sidebar {
+            width: 380px;
+            background: rgba(10, 10, 25, 0.95);
+            backdrop-filter: blur(15px);
+            border-left: 1px solid rgba(0, 240, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            background: transparent;
+            border: none;
+            color: #8888aa;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            color: #00f0ff;
+            border-bottom: 3px solid #00f0ff;
+            background: rgba(0, 240, 255, 0.05);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .tab-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .grid-presets {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .btn-option {
+            background: rgba(20, 20, 45, 0.7);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            color: #fff;
+            padding: 12px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .btn-option:hover {
+            border-color: #00f0ff;
+            background: rgba(0, 240, 255, 0.15);
+            transform: scale(1.02);
+        }
+
+        .btn-option.active {
+            background: linear-gradient(135deg, #00f0ff, #7000ff);
+            border-color: #00f0ff;
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+        }
+
+        .export-progress-box {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(5, 5, 18, 0.95);
+            border: 1px solid #00f0ff;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+            border-radius: 12px;
+            padding: 16px 24px;
+            width: 320px;
+            text-align: center;
+            display: none;
+            z-index: 200;
+        }
+
+        .export-progress-box.active {
+            display: block;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #111;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f0ff, #ff007f);
+            transition: width 0.1s linear;
+        }
+
+        .status-text {
+            font-size: 0.85rem;
+            color: #00f0ff;
+            font-weight: 700;
+        }
+
+        @media (max-width: 850px) {
+            .workspace {
+                flex-direction: column;
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                height: 400px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <h1>⚡ CRAZY CUT ⚡</h1>
+    <header>
+        <div class="logo">⚡ CRAZY CUT</div>
+        
+        <div class="top-actions">
+            <label for="videoInput" class="btn-glow">📁 Upload Video</label>
+            <input type="file" id="videoInput" accept="video/*">
 
-    <div class="top-actions">
-        <label for="videoInput" class="btn-glow">📁 Upload Video</label>
-        <input type="file" id="videoInput" accept="video/*">
-        <button class="btn-glow btn-download" id="downloadBtn" onclick="downloadEditedVideo()">💾 Export Final Video</button>
-    </div>
+            <div class="fps-selector-box">
+                <span class="fps-label">⚡ FPS:</span>
+                <button class="fps-btn" id="fps30Btn" onclick="selectFps(30)">30 FPS</button>
+                <button class="fps-btn active" id="fps60Btn" onclick="selectFps(60)">60 FPS</button>
+            </div>
+
+            <button class="btn-glow btn-download" id="downloadBtn" onclick="downloadEditedVideo()">💾 Export Video</button>
+        </div>
+    </header>
 
     <div class="workspace">
-        <!-- Video Box -->
-        <div class="video-box">
-            <video id="videoPlayer" controls autoplay loop crossorigin="anonymous">
-                <source src="" type="video/mp4">
-            </video>
-            <img id="overlayImage" alt="Overlay">
-            <div id="textOverlayDiv"></div>
-            <div class="watermark-badge">CRAZY GAMER</div>
+        <div class="preview-area">
+            <div class="video-container">
+                <video id="videoPlayer" controls playsinline crossorigin="anonymous"></video>
+            </div>
+            
+            <canvas id="exportCanvas"></canvas>
+
+            <div class="export-progress-box" id="exportProgressBox">
+                <div class="status-text" id="exportStatusText">🎬 Initializing Render...</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="exportProgressBar"></div>
+                </div>
+                <div style="font-size:0.75rem; color:#aaa; margin-top:6px;" id="exportPercentage">0%</div>
+            </div>
         </div>
 
-        <!-- Timeline Strip -->
-        <div class="timeline-strip" id="timelineStrip">
-            <div style="font-size:0.8rem; color:#00f0ff; font-weight:700; min-width:70px;">TIMELINE:</div>
-            <div class="timeline-clip active" onclick="selectClip(0)">🎬 Main Clip 1<br><span id="clip1Time" style="font-size:0.65rem; color:#aaa;">0s - Full</span></div>
-        </div>
-
-        <!-- Controls Panel -->
-        <div class="controls-panel">
-            <div class="tabs-header">
-                <div class="tab-btn active" onclick="switchTab('basicTab')">Basic ✂️</div>
-                <div class="tab-btn" onclick="switchTab('proCcTab')">Pro CC 🎨</div>
-                <div class="tab-btn" onclick="switchTab('proFxTab')">Pro FX ✨</div>
-                <div class="tab-btn" onclick="switchTab('textTab')">Text 📝</div>
-                <div class="tab-btn" onclick="switchTab('audioTab')">Audio 🎵</div>
-                <div class="tab-btn" onclick="switchTab('overlayTab')">Overlay 🟩</div>
+        <div class="sidebar">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('ccTab', this)">50+ CC 🎨</button>
+                <button class="tab-btn" onclick="switchTab('fxTab', this)">Trending 🔥</button>
             </div>
 
-            <!-- TAB 1: BASIC TOOLS -->
-            <div id="basicTab" class="tab-content active">
-                <div class="section-title">✂️ Primary Editing Tools</div>
-                <div class="tool-row">
-                    <label>✂️ Split / Trim (Start - End s):</label>
-                    <input type="number" id="startTime" value="0" min="0" style="width: 45px;">
-                    <input type="number" id="endTime" value="10" min="1" style="width: 45px;">
-                    <button onclick="applyTrim()" style="background:#7000ff; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-weight:700; cursor:pointer;">Cut</button>
-                </div>
-                <div class="tool-row">
-                    <label>⚡ Speed:</label>
-                    <select id="speedSelect" onchange="applySpeed()">
-                        <option value="1">1.0x Normal</option>
-                        <option value="0.5">0.5x Slow-Mo</option>
-                        <option value="2">2.0x Fast</option>
-                        <option value="3">3.0x Hyper Speed</option>
-                    </select>
-                </div>
-                <div class="tool-row">
-                    <label>🔊 Volume:</label>
-                    <input type="range" id="volRange" min="0" max="1" step="0.1" value="1" oninput="applyVolume()" style="width: 90px;">
-                </div>
-                <div class="tool-row">
-                    <label>📐 Ratio:</label>
-                    <select id="ratioSelect" onchange="applyRatio()">
-                        <option value="original">Original</option>
-                        <option value="9:16">9:16 Reels / Shorts</option>
-                        <option value="16:9">16:9 YouTube</option>
-                        <option value="1:1">1:1 Square</option>
-                    </select>
-                </div>
-                <div class="tool-row">
-                    <label>🔄 Mirror:</label>
-                    <button class="btn-option" onclick="applyFlip()" style="padding: 4px 8px;">Flip Horizontal</button>
+            <div id="ccTab" class="tab-content active">
+                <div class="grid-presets" id="ccPresetsContainer">
+                    <button class="btn-option active" onclick="setCC('none', this)">Normal (No CC)</button>
+                    <button class="btn-option" onclick="setCC('cc1', this)">CC 1 Auto Glow</button>
+                    <button class="btn-option" onclick="setCC('cc2', this)">CC 2 Neon Cyber</button>
+                    <button class="btn-option" onclick="setCC('cc3', this)">CC 3 Dark Knight</button>
+                    <button class="btn-option" onclick="setCC('cc4', this)">CC 4 HDR Ultra</button>
+                    <button class="btn-option" onclick="setCC('cc5', this)">CC 5 Vintage Film</button>
+                    <button class="btn-option" onclick="setCC('cc6', this)">CC 6 Red Passion</button>
+                    <button class="btn-option" onclick="setCC('cc7', this)">CC 7 Blue Aura</button>
+                    <button class="btn-option" onclick="setCC('cc8', this)">CC 8 Anime Soft</button>
+                    <button class="btn-option" onclick="setCC('cc9', this)">CC 9 Vivid Punch</button>
+                    <button class="btn-option" onclick="setCC('cc10', this)">CC 10 Deep Shadow</button>
+                    <button class="btn-option" onclick="setCC('cc11', this)">CC 11 Cinema Gold</button>
+                    <button class="btn-option" onclick="setCC('cc12', this)">CC 12 Cold Chill</button>
+                    <button class="btn-option" onclick="setCC('cc13', this)">CC 13 Warm Sunset</button>
+                    <button class="btn-option" onclick="setCC('cc14', this)">CC 14 Soft Pastel</button>
+                    <button class="btn-option" onclick="setCC('cc15', this)">CC 15 Matrix Green</button>
+                    <button class="btn-option" onclick="setCC('cc16', this)">CC 16 High Sharp</button>
+                    <button class="btn-option" onclick="setCC('cc17', this)">CC 17 Cyber Violet</button>
+                    <button class="btn-option" onclick="setCC('cc18', this)">CC 18 B&W Drama</button>
+                    <button class="btn-option" onclick="setCC('cc19', this)">CC 19 Sepia Retro</button>
+                    <button class="btn-option" onclick="setCC('cc20', this)">CC 20 Sunlight</button>
                 </div>
             </div>
 
-            <!-- TAB 2: PRO CC (Color Grading) -->
-            <div id="proCcTab" class="tab-content">
-                <div class="section-title">🎨 Cinematic Color Grading (CC)</div>
-                <button class="btn-option" style="background:linear-gradient(135deg, #00f0ff, #7000ff); color:#fff; padding: 8px;" onclick="setCC('auto')">⚡ Auto-Enhance Smart CC</button>
-                <div class="grid-options-3">
-                    <button class="btn-option" onclick="setCC('original')">Original</button>
-                    <button class="btn-option" onclick="setCC('cyber')">Cyber Neon</button>
-                    <button class="btn-option" onclick="setCC('hdr')">HDR Boost</button>
-                    <button class="btn-option" onclick="setCC('teal')">Teal & Orange</button>
-                    <button class="btn-option" onclick="setCC('anime')">Anime Vivid</button>
-                    <button class="btn-option" onclick="setCC('moody')">Moody Dark</button>
-                    <button class="btn-option" onclick="setCC('retro')">90s Retro Vibe</button>
-                    <button class="btn-option" onclick="setCC('matrix')">Matrix Green</button>
-                    <button class="btn-option" onclick="setCC('blood')">Blood Red</button>
-                    <button class="btn-option" onclick="setCC('ice')">Arctic Ice</button>
-                    <button class="btn-option" onclick="setCC('gold')">Golden Hour</button>
-                    <button class="btn-option" onclick="setCC('godmode')">🔥 God Mode</button>
+            <div id="fxTab" class="tab-content">
+                <div class="grid-presets">
+                    <button class="btn-option" onclick="setCC('fxShake', this)">⚡ Shake FX</button>
+                    <button class="btn-option" onclick="setCC('fxGlitch', this)">👾 RGB Glitch</button>
+                    <button class="btn-option" onclick="setCC('fxFlash', this)">💥 White Flash</button>
+                    <button class="btn-option" onclick="setCC('fxBlur', this)">🌀 Halo Blur</button>
+                    <button class="btn-option" onclick="setCC('fxNeon', this)">💡 Neon Edge</button>
+                    <button class="btn-option" onclick="setCC('fxVhs', this)">📹 Retro VHS</button>
                 </div>
             </div>
-
-            <!-- TAB 3: PRO FX (Visual Effects) -->
-            <div id="proFxTab" class="tab-content">
-                <div class="section-title" style="color:#ff007f;">✨ Futuristic Effects & Glitches</div>
-                <div class="grid-options-3">
-                    <button class="btn-option btn-fx" onclick="setFX('shake')">🔥 Cam Shake</button>
-                    <button class="btn-option btn-fx" onclick="setFX('rgb')">💥 RGB Split</button>
-                    <button class="btn-option btn-fx" onclick="setFX('flash')">⚡ White Flash</button>
-                    <button class="btn-option btn-fx" onclick="setFX('halo')">✨ Halo Glow</button>
-                    <button class="btn-option btn-fx" onclick="setFX('neonpulse')">💡 Neon Pulse</button>
-                    <button class="btn-option btn-fx" onclick="setFX('vhs')">📼 VHS Grain</button>
-                </div>
-            </div>
-
-            <!-- TAB 4: TEXT -->
-            <div id="textTab" class="tab-content">
-                <div class="section-title">📝 Add Custom Neon Text</div>
-                <div class="tool-row">
-                    <label>Type Text:</label>
-                    <input type="text" id="customTextInput" placeholder="Enter text..." style="width: 130px;">
-                    <button onclick="applyCustomText()" style="background:#7000ff; color:#fff; border:none; padding:5px 10px; border-radius:4px; font-weight:700;">Apply</button>
-                </div>
-            </div>
-
-            <!-- TAB 5: AUDIO -->
-            <div id="audioTab" class="tab-content">
-                <div class="section-title">🎵 Background Music Uploader</div>
-                <div class="tool-row">
-                    <label>Upload Song (MP3/WAV):</label>
-                    <input type="file" id="audioInput" accept="audio/*">
-                    <label for="audioInput" class="btn-option" style="padding: 5px 10px; margin:0; cursor:pointer;">Choose MP3</label>
-                </div>
-                <audio id="bgAudio" loop></audio>
-            </div>
-
-            <!-- TAB 6: OVERLAY -->
-            <div id="overlayTab" class="tab-content">
-                <div class="section-title">🟩 Add Photo Logo / Overlay</div>
-                <div class="tool-row">
-                    <label>Upload Image Layer:</label>
-                    <input type="file" id="imageOverlayInput" accept="image/*">
-                    <label for="imageOverlayInput" class="btn-option" style="padding: 5px 10px; margin:0; cursor:pointer;">Choose Photo</label>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <canvas id="exportCanvas"></canvas>
-
     <script>
-        const videoInput = document.getElementById('videoInput');
         const videoPlayer = document.getElementById('videoPlayer');
-        const startTime = document.getElementById('startTime');
-        const endTime = document.getElementById('endTime');
-        const volRange = document.getElementById('volRange');
-        const overlayImage = document.getElementById('overlayImage');
-        const textOverlayDiv = document.getElementById('textOverlayDiv');
-        const bgAudio = document.getElementById('bgAudio');
-
+        const videoInput = document.getElementById('videoInput');
         let currentFilter = 'none';
-        let isFlipped = false;
-        let overlayImgSrc = '';
+        let selectedFps = 60;
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+        function selectFps(fps) {
+            selectedFps = fps;
+            document.getElementById('fps30Btn').classList.toggle('active', fps === 30);
+            document.getElementById('fps60Btn').classList.toggle('active', fps === 60);
         }
 
         videoInput.addEventListener('change', function(e) {
@@ -501,228 +403,172 @@
             if (file) {
                 const url = URL.createObjectURL(file);
                 videoPlayer.src = url;
-                videoPlayer.onloadedmetadata = function() {
-                    endTime.value = Math.floor(videoPlayer.duration);
-                    document.getElementById('clip1Time').innerText = `0s - ${Math.floor(videoPlayer.duration)}s`;
-                };
                 videoPlayer.play();
-                if(!videoPlayer.muted && bgAudio.src) bgAudio.play();
             }
         });
 
-        document.getElementById('imageOverlayInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                overlayImgSrc = url;
-                overlayImage.src = url;
-                overlayImage.style.display = 'block';
-            }
-        });
-
-        document.getElementById('audioInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                bgAudio.src = url;
-                bgAudio.play();
-                alert("Background audio loaded successfully!");
-            }
-        });
-
-        function applyCustomText() {
-            const txt = document.getElementById('customTextInput').value;
-            if(txt) {
-                textOverlayDiv.innerText = txt;
-                textOverlayDiv.style.display = 'block';
-            }
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
         }
 
-        // Pro Color Grading Presets
-        function setCC(type) {
-            if (type === 'original') currentFilter = 'none';
-            else if (type === 'auto') currentFilter = 'contrast(160%) brightness(110%) saturate(200%) drop-shadow(0 0 6px #00f0ff)';
-            else if (type === 'cyber') currentFilter = 'contrast(180%) brightness(115%) saturate(220%) hue-rotate(-15deg)';
-            else if (type === 'hdr') currentFilter = 'contrast(210%) brightness(125%) saturate(250%)';
-            else if (type === 'teal') currentFilter = 'contrast(165%) brightness(105%) saturate(180%) hue-rotate(170deg)';
-            else if (type === 'anime') currentFilter = 'contrast(140%) brightness(130%) saturate(210%)';
-            else if (type === 'moody') currentFilter = 'contrast(190%) brightness(85%) saturate(130%)';
-            else if (type === 'retro') currentFilter = 'contrast(135%) brightness(100%) saturate(90%) sepia(30%)';
-            else if (type === 'matrix') currentFilter = 'contrast(180%) brightness(110%) saturate(220%) hue-rotate(110deg)';
-            else if (type === 'blood') currentFilter = 'contrast(200%) brightness(90%) saturate(260%) sepia(60%)';
-            else if (type === 'ice') currentFilter = 'contrast(160%) brightness(130%) saturate(180%) hue-rotate(200deg)';
-            else if (type === 'gold') currentFilter = 'contrast(175%) brightness(115%) saturate(230%) sepia(40%)';
-            else if (type === 'godmode') currentFilter = 'contrast(260%) brightness(145%) saturate(380%) drop-shadow(0 0 12px #ff007f)';
+        const ccFilters = {
+            'none': 'none',
+            'cc1': 'contrast(130%) brightness(110%) saturate(140%)',
+            'cc2': 'contrast(150%) hue-rotate(180deg) saturate(180%)',
+            'cc3': 'contrast(170%) brightness(80%) saturate(90%)',
+            'cc4': 'contrast(160%) brightness(105%) saturate(160%)',
+            'cc5': 'sepia(40%) contrast(120%) brightness(90%)',
+            'cc6': 'hue-rotate(320deg) saturate(200%) contrast(120%)',
+            'cc7': 'hue-rotate(190deg) saturate(160%) brightness(105%)',
+            'cc8': 'brightness(115%) saturate(130%) contrast(95%)',
+            'cc9': 'contrast(140%) saturate(220%)',
+            'cc10': 'brightness(75%) contrast(180%)',
+            'cc11': 'sepia(25%) contrast(135%) brightness(105%)',
+            'cc12': 'hue-rotate(160deg) contrast(110%)',
+            'cc13': 'sepia(30%) hue-rotate(340deg) saturate(150%)',
+            'cc14': 'brightness(110%) saturate(80%) contrast(90%)',
+            'cc15': 'hue-rotate(90deg) saturate(170%) contrast(130%)',
+            'cc16': 'contrast(200%) saturate(110%)',
+            'cc17': 'hue-rotate(270deg) saturate(190%) contrast(130%)',
+            'cc18': 'grayscale(100%) contrast(160%)',
+            'cc19': 'sepia(80%) contrast(110%)',
+            'cc20': 'brightness(125%) saturate(130%) hue-rotate(10deg)',
+            'fxShake': 'contrast(140%) saturate(150%)',
+            'fxGlitch': 'hue-rotate(90deg) invert(20%) contrast(150%)',
+            'fxFlash': 'brightness(180%) contrast(150%)',
+            'fxBlur': 'blur(3px) brightness(110%)',
+            'fxNeon': 'invert(100%) hue-rotate(180deg)',
+            'fxVhs': 'sepia(50%) hue-rotate(200%) contrast(120%)'
+        };
 
-            videoPlayer.style.animation = 'none';
+        // Populate CC 21 to 55 safely
+        document.addEventListener('DOMContentLoaded', () => {
+            const ccContainer = document.getElementById('ccPresetsContainer');
+            if (ccContainer) {
+                for (let i = 21; i <= 55; i++) {
+                    const filterFormula = `contrast(${100 + (i % 8) * 10}%) brightness(${90 + (i % 5) * 5}%) saturate(${110 + (i % 10) * 10}%) hue-rotate(${(i * 12) % 360}deg)`;
+                    ccFilters[`cc${i}`] = filterFormula;
+
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-option';
+                    btn.innerText = `CC ${i} Pro`;
+                    btn.onclick = function() { setCC(`cc${i}`, this); };
+                    ccContainer.appendChild(btn);
+                }
+            }
+        });
+
+        function setCC(presetKey, btn) {
+            currentFilter = ccFilters[presetKey] || 'none';
             videoPlayer.style.filter = currentFilter;
+            
+            document.querySelectorAll('.btn-option').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
         }
 
-        // Pro Visual Effects
-        function setFX(type) {
-            if (type === 'shake') {
-                currentFilter = 'contrast(180%) saturate(220%)';
-                videoPlayer.style.animation = 'shakeAnim 0.25s infinite alternate';
-            } else if (type === 'rgb') {
-                currentFilter = 'contrast(190%) hue-rotate(80deg) saturate(280%)';
-                videoPlayer.style.animation = 'none';
-            } else if (type === 'flash') {
-                currentFilter = 'brightness(190%) contrast(160%)';
-                videoPlayer.style.animation = 'flashAnim 0.7s infinite';
-            } else if (type === 'halo') {
-                currentFilter = 'blur(0.8px) contrast(160%) brightness(125%) drop-shadow(0 0 12px #00f0ff)';
-                videoPlayer.style.animation = 'none';
-            } else if (type === 'neonpulse') {
-                currentFilter = 'contrast(210%) saturate(280%)';
-                videoPlayer.style.animation = 'neonPulseAnim 1.2s infinite alternate';
-            } else if (type === 'vhs') {
-                currentFilter = 'contrast(135%) saturate(75%) sepia(45%) blur(0.5px)';
-                videoPlayer.style.animation = 'none';
+        function getSupportedMimeType() {
+            const types = [
+                'video/webm;codecs=vp9',
+                'video/webm;codecs=vp8',
+                'video/webm',
+                'video/mp4'
+            ];
+            for (let type of types) {
+                if (MediaRecorder.isTypeSupported(type)) return type;
             }
-            videoPlayer.style.filter = currentFilter;
+            return '';
         }
 
-        function applyTrim() {
-            const start = parseFloat(startTime.value) || 0;
-            const end = parseFloat(endTime.value) || videoPlayer.duration;
-            videoPlayer.currentTime = start;
-            videoPlayer.ontimeupdate = function() {
-                if (videoPlayer.currentTime >= end) videoPlayer.currentTime = start;
-            };
-        }
-
-        function applySpeed() {
-            videoPlayer.playbackRate = parseFloat(document.getElementById('speedSelect').value);
-        }
-
-        function applyVolume() {
-            videoPlayer.volume = parseFloat(volRange.value);
-            bgAudio.volume = parseFloat(volRange.value);
-        }
-
-        function applyRatio() {
-            const ratio = document.getElementById('ratioSelect').value;
-            if (ratio === '9:16') videoPlayer.style.aspectRatio = '9/16';
-            else if (ratio === '16:9') videoPlayer.style.aspectRatio = '16/9';
-            else if (ratio === '1:1') videoPlayer.style.aspectRatio = '1/1';
-            else videoPlayer.style.aspectRatio = 'auto';
-        }
-
-        function applyFlip() {
-            isFlipped = !isFlipped;
-            videoPlayer.style.transform = isFlipped ? 'scaleX(-1)' : 'scaleX(1)';
-        }
-
-        function selectClip(index) {
-            document.querySelectorAll('.timeline-clip').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
-
-        function downloadEditedVideo() {
-            const canvas = document.getElementById('exportCanvas');
-            const ctx = canvas.getContext('2d');
-
-            if (!videoPlayer.src) {
+        async function downloadEditedVideo() {
+            if (!videoPlayer.src || videoPlayer.readyState < 2) {
                 alert("Please upload a video first!");
                 return;
             }
 
-            canvas.width = videoPlayer.videoWidth || 640;
-            canvas.height = videoPlayer.videoHeight || 360;
-
             const downloadBtn = document.getElementById('downloadBtn');
-            downloadBtn.innerText = "⏳ Processing...";
+            const progressBox = document.getElementById('exportProgressBox');
+            const statusText = document.getElementById('exportStatusText');
+            const percentageText = document.getElementById('exportPercentage');
+            const progressBar = document.getElementById('exportProgressBar');
+
             downloadBtn.disabled = true;
+            progressBox.classList.add('active');
+            progressBar.style.width = '0%';
+            percentageText.innerText = '0%';
+            statusText.innerText = `🎬 Exporting ${selectedFps} FPS Video...`;
 
-            const stream = canvas.captureStream(30);
-            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+            const canvas = document.getElementById('exportCanvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = videoPlayer.videoWidth || 1280;
+            canvas.height = videoPlayer.videoHeight || 720;
+
+            const stream = canvas.captureStream(selectedFps);
+            const mimeType = getSupportedMimeType();
+
+            let mediaRecorder;
+            try {
+                mediaRecorder = new MediaRecorder(stream, {
+                    mimeType: mimeType || undefined,
+                    videoBitsPerSecond: selectedFps === 60 ? 6000000 : 3500000
+                });
+            } catch (err) {
+                mediaRecorder = new MediaRecorder(stream);
+            }
+
             const chunks = [];
+            mediaRecorder.ondataavailable = e => {
+                if (e.data && e.data.size > 0) chunks.push(e.data);
+            };
 
-            mediaRecorder.ondataavailable = e => chunks.data && chunks.push(e.data);
-            mediaRecorder.onstop = e => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: mimeType || 'video/webm' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'CRAZY_CUT_EDITED.webm';
+                a.download = `CRAZY_CUT_${selectedFps}FPS.webm`;
                 a.click();
 
-                downloadBtn.innerText = "💾 Export Final Video";
                 downloadBtn.disabled = false;
+                progressBox.classList.remove('active');
+                videoPlayer.play();
             };
 
-            videoPlayer.currentTime = parseFloat(startTime.value) || 0;
-            videoPlayer.playbackRate = parseFloat(document.getElementById('speedSelect').value) || 1;
+            // Reset video to start
+            videoPlayer.pause();
+            videoPlayer.currentTime = 0;
+            await new Promise(r => setTimeout(r, 200));
+
+            const duration = videoPlayer.duration || 1;
+            mediaRecorder.start(100);
             videoPlayer.play();
-            if(bgAudio.src) bgAudio.play();
-            mediaRecorder.start();
 
-            const imgObj = new Image();
-            if(overlayImgSrc) imgObj.src = overlayImgSrc;
-
-            function drawFrame() {
-                if (videoPlayer.paused || videoPlayer.ended) return;
-
-                ctx.save();
-                if (isFlipped) {
-                    ctx.scale(-1, 1);
-                    ctx.drawImage(videoPlayer, -canvas.width, 0, canvas.width, canvas.height);
-                } else {
-                    ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
-                }
-                ctx.restore();
-
-                if(overlayImgSrc && imgObj.complete) {
-                    ctx.drawImage(imgObj, 20, 20, 100, 100);
+            function renderLoop() {
+                if (videoPlayer.ended || videoPlayer.currentTime >= duration) {
+                    statusText.innerText = "⚡ Saving File...";
+                    progressBar.style.width = '100%';
+                    percentageText.innerText = '100%';
+                    setTimeout(() => {
+                        if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+                    }, 200);
+                    return;
                 }
 
-                const customTxt = document.getElementById('customTextInput').value;
-                if(customTxt) {
-                    ctx.filter = 'none';
-                    ctx.font = '900 30px Rajdhani, sans-serif';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.shadowColor = '#ff007f';
-                    ctx.shadowBlur = 15;
-                    ctx.textAlign = 'center';
-                    ctx.fillText(customTxt, canvas.width / 2, canvas.height - 85);
-                }
+                ctx.filter = currentFilter !== 'none' ? currentFilter : 'none';
+                ctx.drawImage(videoPlayer, 0, 0, canvas.width, canvas.height);
 
-                ctx.filter = 'none';
-                ctx.font = '700 18px Rajdhani, sans-serif';
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                ctx.shadowColor = '#00f0ff';
-                ctx.shadowBlur = 10;
-                ctx.textAlign = 'center';
-                ctx.fillText('CRAZY GAMER', canvas.width / 2, canvas.height - 22);
+                const progress = Math.min(100, Math.floor((videoPlayer.currentTime / duration) * 100));
+                progressBar.style.width = `${progress}%`;
+                percentageText.innerText = `${progress}%`;
 
-                if (videoPlayer.currentTime >= (parseFloat(endTime.value) || videoPlayer.duration)) {
-                    mediaRecorder.stop();
-                    videoPlayer.pause();
-                    if(bgAudio.src) bgAudio.pause();
-                } else {
-                    requestAnimationFrame(drawFrame);
-                }
+                requestAnimationFrame(renderLoop);
             }
 
-            drawFrame();
+            requestAnimationFrame(renderLoop);
         }
     </script>
-
-    <style>
-        @keyframes shakeAnim {
-            0% { transform: translate(3px, 3px) rotate(0deg); }
-            100% { transform: translate(-3px, -2px) rotate(-1deg); }
-        }
-        @keyframes flashAnim {
-            0% { filter: brightness(100%); }
-            50% { filter: brightness(240%) contrast(180%); }
-            100% { filter: brightness(100%); }
-        }
-        @keyframes neonPulseAnim {
-            0% { filter: contrast(180%) drop-shadow(0 0 4px #00f0ff); }
-            100% { filter: contrast(230%) drop-shadow(0 0 16px #ff007f); }
-        }
-    </style>
-
 </body>
 </html>
